@@ -15,6 +15,7 @@ all::
 	cp $(shell ocamlfind printconf conf) .site-lib/
 	OCAMLFIND_DESTDIR=$(WD)/.site-lib ./update-findlib-path.pl .site-lib/findlib.conf
 	OCAMLFIND_CONF=$(WD)/.site-lib/findlib.conf $(INSTALL_COMMAND)
+	make -C test all
 
 
 install:: all
@@ -24,6 +25,7 @@ install:: all
 clean::
 	make -C syntax clean
 	make -C baselogger clean
+	make -C test clean
 	rm -rf .site-lib
 
 uninstall::

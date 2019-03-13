@@ -1,12 +1,15 @@
 description="exensible logging tool"
+requires="camlp5"
 version="0.1"
 
+archive(syntax,preprocessor,syntax)="pa_colt.cmo"
+
 package "syntax" (
-  requires="camlp5"
+  requires="camlp5,camlp5.quotations,camlp5.gramlib,camlp5.extend"
   archive(byte) = "pa_colt.cmo"
 )
 
-package "baselogger" (
-  requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show"
-  archive(byte)="baselogger.cma"
+package "baselogging" (
+  requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show,netstring"
+  archive(byte)="baselogging.cma"
 )
