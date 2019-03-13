@@ -2,16 +2,13 @@ PA_LOGARGS=-ppopt -logger -ppopt "Logging" -ppopt -level -ppopt LEVEL
 
 PACKAGES=camlp5,colt-logging,colt-logging.baselogging
 
-all: prog
+all: prog_DEBUG prog_TRACE
 
-prog: prog.cmo
-	OCAMLFIND_CONF=../.site-lib/findlib.conf ocamlfind  ocamlc -package $(PACKAGES) -linkpkg -linkall -o prog prog.cmo
+prog_DEBUG: prog.ml
+	OCAMLFIND_CONF=../.site-lib/findlib.conf ocamlfind ocamlc -verbose -package $(PACKAGES) -syntax camlp5o -syntax colt $(PA_LOGARGS:LEVEL=DEBUG) -linkall -linkpkg -o prog_DEBUG prog.ml
 
-prog.cmo: prog.ml
-	OCAMLFIND_CONF=../.site-lib/findlib.conf ocamlfind ocamlc -verbose -package $(PACKAGES) -syntax camlp5o -syntax colt $(PA_LOGARGS:LEVEL=DEBUG) -c prog.ml
-
-prog.ppo: prog.ml
-	camlp5 -nolib '-I' '/home/chet/Hack/Ocaml/4.07.1-HACKING/ocaml-base-compiler.4.07.1/lib/camlp5' '-I' '/home/chet/Hack/Ocaml-Hacking/src/colt-logging/.site-lib/colt-logging' 'pa_o.cmo' 'pa_op.cmo' pr_o.cmo 'pr_op.cmo' 'pa_colt.cmo' '-logger' 'Logging' '-level' 'DEBUG' prog.ml > prog.ppo
+prog_TRACE: prog.ml
+	OCAMLFIND_CONF=../.site-lib/findlib.conf ocamlfind ocamlc -verbose -package $(PACKAGES) -syntax camlp5o -syntax colt $(PA_LOGARGS:LEVEL=TRACE) -linkall -linkpkg -o prog_TRACE prog.ml
 
 clean:
-	rm -f prog *.ppo *.ppr *.cm* *.o *.ast *~ *.ml.html *.annot
+	rm -f *.ppo *.ppr *.cm* *.o *.ast *~ *.ml.html *.annot prog prog_DEBUG prog_TRACE
