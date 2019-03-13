@@ -1,2 +1,5 @@
 *.cm*
 *.o
+.site-lib
+*.ppo
+*.annot
