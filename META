@@ -1,0 +1,12 @@
+description="exensible logging tool"
+version="0.1"
+
+package "syntax" (
+  requires="camlp5"
+  archive(byte) = "pa_colt.cmo"
+)
+
+package "baselogger" (
+  requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show"
+  archive(byte)="baselogger.cma"
+)
