@@ -2,7 +2,7 @@ description="exensible logging tool"
 requires="camlp5"
 version="0.1"
 
-archive(syntax,preprocessor,syntax)="pa_colt.cmo"
+archive(syntax,preprocessor,colt)="pa_colt.cmo"
 
 package "syntax" (
   requires="camlp5,camlp5.quotations,camlp5.gramlib,camlp5.extend"
