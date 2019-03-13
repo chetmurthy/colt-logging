@@ -1,10 +1,13 @@
-
 let logging_levels =
   [
+    "EMERG";
+    "ALERT";
+    "CRIT";
     "FATAL";
     "ERROR";
     "WARN";
 
+    "NOTICE";
     "INFO0";
     "INFO1";
     "INFO2";
