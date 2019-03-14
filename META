@@ -13,3 +13,8 @@ package "baselogging" (
   requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show,netstring"
   archive(byte)="baselogging.cma"
 )
+
+package "netlogging" (
+  requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show,netstring,netsys"
+  archive(byte)="netlogging.cma"
+)

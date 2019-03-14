@@ -142,15 +142,13 @@ let sublogger l extname =
 let will_log l ~line sev =
   sev <= l.Logger.severity
 
-let format_line ~sev ~name ~line ~msg =
-  let sev_string = severity_t_to_string sev in
-  let time_s = () |> Unix.gettimeofday |> Netdate.mk_internet_date in
-  Printf.sprintf "%s [%s %d] %s %s\n" time_s name line sev_string msg
+let format_line ~name ~line ~msg =
+  Printf.sprintf "[%s %d] %s\n" name line msg
 
 let make_printer sev =
   (fun l ~line ?properties msg ->
     if sev <= l.Logger.severity then
-      let line = format_line ~sev ~name:l.name ~line ~msg in
+      let line = format_line ~name:l.name ~line ~msg in
       l.sink.logger (severity_t_to_level sev) line
   )
 

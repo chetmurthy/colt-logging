@@ -1,10 +1,10 @@
 [
   {
     "name_pat": "Prog.N",
-    "log": [ "TRACE9" ]
+    "severity": [ "DEBUG" ]
   },
   {
     "name_pat": "Prog$",
-    "log": [ "DEBUG9" ]
+    "severity": [ "DEBUG" ]
   }
 ]
