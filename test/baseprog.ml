@@ -19,7 +19,7 @@ LOG "%d" ~properties:[] 1 LEVEL DEBUG9 ;;
 M.f() ;;
 N.f();;
 
-Logging.Config.from_file "logcfg.json" ;;
+Logging.Config.from_file "baselog-cfg.json" ;;
 
 M.f() ;;
 N.f();;

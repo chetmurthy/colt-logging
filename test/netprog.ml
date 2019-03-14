@@ -19,7 +19,7 @@ LOG "%d" ~properties:[] 1 LEVEL DEBUG ;;
 M.f() ;;
 N.f();;
 
-Netlogger.Config.from_file "logcfg.json" ;;
+Netlogger.Config.from_file "netlog-cfg.json" ;;
 
 M.f() ;;
 N.f();;

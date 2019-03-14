@@ -90,6 +90,7 @@ module Logger = struct
       mutable log : severity_t ;
       mutable sink : sink_t ;
       mutable flush : bool ;
+      parent : t option ;
     }
 end
 
@@ -166,6 +167,7 @@ let create name =
     log = INFO9 ;
     sink = STDERR ;
     flush = true ;
+    parent = None ;
     } in
   _register l ;
   Config.adjust l ;
@@ -175,6 +177,7 @@ let sublogger l extname =
   let l = Logger.{
     l with
     name = l.name ^"."^ extname ;
+    parent = Some l ;
     } in
   _register l ;
   Config.adjust l ;
@@ -188,17 +191,24 @@ let format_line ~sev ~name ~line ~msg =
   let time_s = () |> Unix.gettimeofday |> Netdate.mk_internet_date in
   Printf.sprintf "%s [%s %d] %s %s\n" time_s name line sev_string msg
 
+let rec log1 sev l ~line ~properties msg =
+  if sev <= l.Logger.log then
+    let fmtline = format_line ~sev ~name:l.Logger.name ~line ~msg in
+    let oc =
+      match l.sink with
+      | STDOUT -> stdout
+      | STDERR -> stderr
+      | OC oc -> oc in
+    output_string oc fmtline ;
+    if l.flush then flush oc ;
+    match sev <= l.pass, l.parent with
+    | true, Some p ->
+       log1 sev p ~line ~properties msg
+    | _ -> ()
+
 let make_printer sev =
   (fun l ~line ?properties msg ->
-    if sev <= l.Logger.log then
-      let line = format_line ~sev ~name:l.name ~line ~msg in
-      let oc =
-        match l.sink with
-        | STDOUT -> stdout
-        | STDERR -> stderr
-        | OC oc -> oc in
-      output_string oc line ;
-      if l.flush then flush oc
+    log1 sev l ~line ~properties msg
   )
 
 type printer_t = Logger.t -> line:int -> ?properties:(string * string) list -> string -> unit

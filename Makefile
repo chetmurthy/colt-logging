@@ -14,9 +14,7 @@ all::
 	make -C baselogger all
 	make -C netlogger all
 	rm -rf .site-lib && mkdir .site-lib
-	cp $(shell ocamlfind printconf conf) .site-lib/
-	OCAMLFIND_DESTDIR=$(WD)/.site-lib ./update-findlib-path.pl .site-lib/findlib.conf
-	OCAMLFIND_CONF=$(WD)/.site-lib/findlib.conf $(INSTALL_COMMAND)
+	OCAMLFIND_DESTDIR=$(WD)/.site-lib $(INSTALL_COMMAND)
 	make -C test all
 
 
