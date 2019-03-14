@@ -1,3 +1,6 @@
 baseprog
 baseprog_DEBUG
 baseprog_TRACE
+netprog
+netprog_DEBUG
+netprog_TRACE
