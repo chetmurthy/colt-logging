@@ -1,0 +1,19 @@
+(* Copyright 2019 Chetan Murthy, All rights reserved. *)
+(*
+;;; Local Variables: ***
+;;; mode:tuareg ***
+;;; End: ***
+
+*)
+
+#use "topfind";;
+
+#require "colt-logging.baselogging";;
+#trace Logging.create ;;
+#trace Logging.sublogger ;;
+#trace Logging.Config.adjust ;;
+#trace Logging.Config.adjust1 ;;
+#trace Logging.Config.from_file ;;
+#trace Pcre.pmatch ;;
+#load "baseprog.cmo";;
+Logging.dump_loggers();;

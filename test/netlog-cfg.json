@@ -1,10 +1,10 @@
 [
   {
-    "name_pat": "Prog.N",
+    "name_pat": "Netprog.N",
     "severity": [ "DEBUG" ]
   },
   {
-    "name_pat": "Prog$",
+    "name_pat": "Netprog$",
     "severity": [ "DEBUG" ]
   }
 ]

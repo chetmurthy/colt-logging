@@ -116,6 +116,13 @@ let make_log lvl loc labeled format_e =
   let log_0 = make_log_0 lvl loc labeled in
   <:expr< $log_0$ $format_e$ >>
 
+let logging_test loc lvl =
+  let line = string_of_int (Ploc.line_nb loc) in
+  if remove_from_code lvl then
+    <:expr< False >>
+  else
+    <:expr< $uid:!logger_module$.will_log __logger__ ~{line = $int:line$} $uid:lvl$ >>
+    
 let transl e lvl =
   let loc = MLast.loc_of_expr e in
   if remove_from_code lvl then <:expr< () >> else
@@ -131,10 +138,10 @@ let transl e lvl =
          else ()>>
 
 EXTEND
-    Pcaml.expr: LEVEL "simple" 
-          [[ "LOG"; e = Pcaml.expr; "LEVEL"; lvl = UIDENT ->
-	    transl e lvl
-      ]];
+  Pcaml.expr: LEVEL "simple" [
+                  [ "LOG"; e = Pcaml.expr; "LEVEL"; lvl = UIDENT -> transl e lvl ]
+                | [ "IS_LOGGING" ; lvl = UIDENT -> logging_test loc lvl ]
+                ];
 END;;
 
 let declare loc name =

@@ -92,11 +92,22 @@ module Logger = struct
       mutable flush : bool ;
       parent : t option ;
     }
+  let dump oc l =
+    Printf.fprintf stderr "name=<<%s>> pass=%s log=%s flush=%b\n"
+      l.name (severity_t_to_string l.pass) (severity_t_to_string l.log) l.flush ;
+    flush oc
 end
 
 let all_loggers = (Hashtbl.create 23 : (string, Logger.t) Hashtbl.t)
 let _register l =
   Hashtbl.add all_loggers l.Logger.name l
+
+let dump_loggers () =
+  let dump1 name l =
+    Printf.fprintf stderr "%s" name ;
+    Logger.dump stderr l in
+  Hashtbl.iter dump1 all_loggers ;
+  flush stderr
 
 module Config = struct
   type t = {
@@ -111,21 +122,24 @@ module Config = struct
 
   let configs = ref []
 
+  let adjust1 c l =
+    (match c.pass with None -> () | Some v -> l.Logger.pass <- v) ;
+    (match c.log with None -> () | Some v -> l.Logger.log <- v) ;
+    (match c.flush with None -> () | Some v -> l.Logger.flush <- v) ;
+
+    match l.Logger.sink, c.filename with
+    | _, None -> ()
+    | STDERR, Some "<stderr>" -> ()
+    | STDOUT, Some "<stdout>" -> ()
+    | _, Some fname ->
+       let oc = open_out fname in
+       at_exit (fun () -> close_out oc) ;
+       l.Logger.sink <- OC oc
+
   let adjust l =
     List.iter (fun (rex, c) ->
-        if Pcre.pmatch ~rex l.Logger.name then (
-          (match c.pass with None -> () | Some v -> l.Logger.pass <- v) ;
-          (match c.log with None -> () | Some v -> l.Logger.log <- v) ;
-          (match c.flush with None -> () | Some v -> l.Logger.flush <- v) ;
-
-          match l.Logger.sink, c.filename with
-          | _, None -> ()
-          | STDERR, Some "<stderr>" -> ()
-          | STDOUT, Some "<stdout>" -> ()
-          | _, Some fname ->
-             let oc = open_out fname in
-             at_exit (fun () -> close_out oc) ;
-             l.Logger.sink <- OC oc
+        if Pcre.pmatch ~pat:c.name_pat l.Logger.name then (
+          adjust1 c l
         )
       ) !configs
 
@@ -184,7 +198,7 @@ let sublogger l extname =
   l
 
 let will_log l ~line sev =
-  sev <= l.Logger.log
+  sev <= l.Logger.log || sev <= l.Logger.pass
 
 let format_line ~sev ~name ~line ~msg =
   let sev_string = severity_t_to_string sev in

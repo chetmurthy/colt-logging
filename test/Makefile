@@ -8,7 +8,7 @@ PA_BASE_LOGARGS=$(PA_GENERIC_LOGARGS:MODULE=Logging)
 PA_BASE_DEBUG_LOGARGS=$(PA_BASE_LOGARGS:LEVEL=DEBUG)
 PA_BASE_TRACE_LOGARGS=$(PA_BASE_LOGARGS:LEVEL=TRACE)
 
-EXTRACT=../extract-preprocessed-files.pl 
+#EXTRACT=../extract-preprocessed-files.pl 
 OCAMLFIND=$(EXTRACT) ocamlfind
 
 baseprog_DEBUG: baseprog.ml

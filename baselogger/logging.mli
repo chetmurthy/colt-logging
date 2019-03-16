@@ -45,6 +45,7 @@ module Logger :
   sig
     type t
   end
+val dump_loggers: unit -> unit
 module Config :
   sig
     val from_file : string -> unit
