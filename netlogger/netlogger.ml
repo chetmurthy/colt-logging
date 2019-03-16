@@ -44,11 +44,23 @@ module Logger = struct
       mutable severity : severity_t ;
       mutable sink : sink_t ;
     }
+
+  let dump oc l =
+    Printf.fprintf stderr "name=<<%s>> severity=%s\n"
+      l.name (severity_t_to_string l.severity) ;
+    flush oc
 end
 
 let all_loggers = (Hashtbl.create 23 : (string, Logger.t) Hashtbl.t)
 let _register l =
   Hashtbl.add all_loggers l.Logger.name l
+
+let dump_loggers () =
+  let dump1 name l =
+    Printf.fprintf stderr "%s " name ;
+    Logger.dump stderr l in
+  Hashtbl.iter dump1 all_loggers ;
+  flush stderr
 
 module Config = struct
   type t = {
@@ -61,29 +73,40 @@ module Config = struct
 
   let configs = ref []
 
+  let adjust1 c l =
+    let must_reopen =
+      match c.severity with
+      | None -> false
+      | Some v -> l.Logger.severity <- v; true in
+
+    let switch_to l ?(close=false) oc =
+      if l.Logger.sink.close then close_out l.Logger.sink.oc ;
+      l.Logger.sink <- {
+          logger = Netlog.channel_logger oc (severity_t_to_level l.Logger.severity) ;
+          oc ;
+          close ;
+        } in
+    
+    match must_reopen, c.filename with
+    | false, None -> ()
+    | _, Some "<stderr>" ->
+       switch_to l stderr
+    | _, Some "<stdout>" ->
+       switch_to l stdout
+    | _, Some fname ->
+       let oc = open_out fname in
+       at_exit (fun () -> close_out oc) ;
+       switch_to l ~close:true oc    
+    | true, None ->
+       l.Logger.sink <- {
+          l.sink with
+          logger = Netlog.channel_logger l.sink.oc (severity_t_to_level l.Logger.severity) ;
+        }
+
   let adjust l =
     List.iter (fun (rex, c) ->
-        if Pcre.pmatch ~rex l.Logger.name then (
-          (match c.severity with None -> () | Some v -> l.Logger.severity <- v) ;
-
-          let switch_to l ?(close=false) oc =
-            if l.Logger.sink.close then close_out l.Logger.sink.oc ;
-            l.Logger.sink <- {
-                logger = Netlog.channel_logger oc (severity_t_to_level l.Logger.severity) ;
-                oc ;
-                close ;
-              } in
-          
-          match l.Logger.sink, c.filename with
-          | _, None -> ()
-          | _, Some "<stderr>" ->
-             switch_to l stderr
-          | _, Some "<stdout>" ->
-             switch_to l stdout
-          | _, Some fname ->
-             let oc = open_out fname in
-             at_exit (fun () -> close_out oc) ;
-             switch_to l ~close:true oc
+        if Pcre.pmatch ~pat:c.name_pat l.Logger.name then (
+          adjust1 c l
         )
       ) !configs
 
@@ -140,6 +163,7 @@ let sublogger l extname =
   l
 
 let will_log l ~line sev =
+  let _ = (line: int) in
   sev <= l.Logger.severity
 
 let format_line ~name ~line ~msg =

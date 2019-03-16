@@ -9,12 +9,12 @@ end
 module N = struct
 LOGGER EXTEND N
 let f() =
-LOG "%d" ~properties:[] 1 LEVEL DEBUG ;
+LOG "%d" ~properties:[] 2 LEVEL DEBUG ;
 ()
 
 end
 
-LOG "%d" ~properties:[] 1 LEVEL DEBUG ;;
+LOG "%d" ~properties:[] 3 LEVEL DEBUG ;;
 
 M.f() ;;
 N.f();;

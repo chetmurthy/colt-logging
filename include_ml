@@ -8,6 +8,8 @@
 
 #use "topfind";;
 
+(*
+
 #require "colt-logging.baselogging";;
 #trace Logging.create ;;
 #trace Logging.sublogger ;;
@@ -17,3 +19,17 @@
 #trace Pcre.pmatch ;;
 #load "baseprog.cmo";;
 Logging.dump_loggers();;
+
+ *)
+
+#require "colt-logging.netlogging";;
+#trace Netllogging.create ;;
+#trace Netlogger.sublogger ;;
+#trace Netlogger.Config.adjust ;;
+#trace Netlogger.Config.adjust1 ;;
+#trace Netlogger.Config.from_file ;;
+#trace Pcre.pmatch ;;
+#trace Netlogger.make_printer ;;
+#trace Netlogger.will_log ;;
+#load "netprog.cmo";;
+Netlogger.dump_loggers();;

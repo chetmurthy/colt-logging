@@ -92,6 +92,7 @@ module Logger = struct
       mutable flush : bool ;
       parent : t option ;
     }
+
   let dump oc l =
     Printf.fprintf stderr "name=<<%s>> pass=%s log=%s flush=%b\n"
       l.name (severity_t_to_string l.pass) (severity_t_to_string l.log) l.flush ;
@@ -104,7 +105,7 @@ let _register l =
 
 let dump_loggers () =
   let dump1 name l =
-    Printf.fprintf stderr "%s" name ;
+    Printf.fprintf stderr "%s " name ;
     Logger.dump stderr l in
   Hashtbl.iter dump1 all_loggers ;
   flush stderr
