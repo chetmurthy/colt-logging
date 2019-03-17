@@ -20,7 +20,7 @@ module Config :
   end
 val create : string -> Logger.t
 val sublogger : Logger.t -> string -> Logger.t
-val will_log : Logger.t -> line:'a -> severity_t -> bool
+val will_log : Logger.t -> line:int -> severity_t -> bool
 type printer_t =
     Logger.t ->
     line:int -> ?properties:(string * string) list -> string -> unit
