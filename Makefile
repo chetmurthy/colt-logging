@@ -3,9 +3,9 @@ PROJECT=colt-logging
 OCAMLFIND=ocamlfind
 
 SYNTAX_FILES = syntax/pa_colt.cmo 
-BASELOGGER_FILES = baselogger/baselogging.cma baselogger/baselogging.cmxa \
+BASELOGGER_FILES = baselogger/baselogging.cma baselogger/baselogging.cmxa baselogger/baselogging.a \
 		   baselogger/logging.cmx baselogger/logging.cmi
-NETLOGGER_FILES = netlogger/netlogging.cma netlogger/netlogging.cmxa \
+NETLOGGER_FILES = netlogger/netlogging.cma netlogger/netlogging.cmxa netlogger/netlogging.a \
 		  netlogger/netlogger.cmx netlogger/netlogger.cmi
 INSTALL_COMMAND=$(OCAMLFIND) install colt-logging META $(SYNTAX_FILES) $(BASELOGGER_FILES) $(NETLOGGER_FILES)
 

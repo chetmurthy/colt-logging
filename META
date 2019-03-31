@@ -12,9 +12,11 @@ package "syntax" (
 package "baselogging" (
   requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show,netstring"
   archive(byte)="baselogging.cma"
+  archive(native) = "baselogging.cmxa"
 )
 
 package "netlogging" (
   requires="ppx_deriving_yojson,ppx_sexp_conv,pcre,yojson,ppx_deriving.show,netstring,netsys"
   archive(byte)="netlogging.cma"
+  archive(native) = "netlogging.cmxa"
 )
